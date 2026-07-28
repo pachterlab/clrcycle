@@ -1,0 +1,21 @@
+name: verify-circadian-workflow
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  reproduce-label-free-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r requirements.txt
+      - run: bash scripts/download_circadian_data.sh
+      - run: >-
+          python scripts/run_all_tissues_clr_acs.py
+          --analysis label-free
+          --results-dir "$RUNNER_TEMP/results"
+      - run: test -s "$RUNNER_TEMP/results/all_tissues_unsupervised_repeat_periodic_96/all_tissue_metrics.csv"

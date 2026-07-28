@@ -1,0 +1,29 @@
+# Public input data are downloaded by scripts/download_circadian_data.sh.
+data/
+
+# Generated analysis output (choose any figures/tables to archive as a release).
+results/
+
+# Exploratory analyses and local reference PDFs are outside the circadian release.
+scripts/*
+!scripts/run_all_tissues_clr_acs.py
+!scripts/run_liver_clr_acs.py
+!scripts/download_circadian_data.sh
+Gene_Visualization.pdf
+Kelly_Maggsl.pdf
+
+# Python and notebook state.
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# LaTeX build products; main.pdf may be committed as a manuscript artifact.
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
