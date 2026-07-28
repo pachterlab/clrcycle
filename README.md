@@ -44,7 +44,6 @@ Use `--results-dir PATH` to write results outside the repository.
 - `scripts/run_liver_clr_acs.py`: liver-only supervised example and shared
   clrcycle routines.
 - `scripts/download_circadian_data.sh`: official GEO data download.
-- `main.tex`: manuscript source; compile with `latexmk -pdf main.tex`.
 
 The computations use fixed random seeds. The clrcycle order is initialized from the
 leading covariance eigenvectors and refined by 4,000 improving pairwise swaps.

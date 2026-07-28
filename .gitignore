@@ -17,7 +17,10 @@ __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 
-# LaTeX build products; main.pdf may be committed as a manuscript artifact.
+# The manuscript is maintained separately from this code repository.
+main.tex
+main.pdf
+refs.bib
 *.aux
 *.bbl
 *.bcf
