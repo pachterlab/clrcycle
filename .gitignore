@@ -1,5 +1,8 @@
 # Public input data are downloaded by scripts/download_circadian_data.sh.
 data/
+!tests/
+!tests/data/
+!tests/data/toy_cycle.csv
 
 # Generated analysis output (choose any figures/tables to archive as a release).
 results/
