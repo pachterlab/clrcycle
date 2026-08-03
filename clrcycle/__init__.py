@@ -97,6 +97,9 @@ def fit(
 
     transformed = clr_transform(selected.to_numpy())
     centered = transformed - transformed.mean(axis=0, keepdims=True)
+    variation_tolerance = 32 * np.finfo(float).eps * max(1.0, np.abs(transformed).max())
+    if np.abs(centered).max() <= variation_tolerance:
+        raise ValueError("input samples have no compositional variation after the CLR transform.")
     covariance = centered.T @ centered / (centered.shape[0] - 1)
     order, objective = circular_order(covariance, seed=seed, n_swaps=n_swaps)
     d = len(order)
