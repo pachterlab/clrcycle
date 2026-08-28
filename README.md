@@ -17,8 +17,10 @@ git clone https://github.com/pachterlab/clrcycle.git
 cd clrcycle
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
+python -m pip install .
 ```
+
+For an editable development installation, use `python -m pip install -e .`.
 
 ## Run clrcycle
 
