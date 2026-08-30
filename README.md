@@ -37,18 +37,33 @@ by default, without labels. Use `--max-features N` to change the panel size or
 
 - `sample_coordinates.csv`: cosine/sine coordinates, phase, and radius;
 - `feature_order.csv`: the learned cyclic feature order; and
-- `projection.png` and `projection.svg`: the sample projection.
+- `projection.png` and `projection.svg`: the sample projection and learned
+  feature circle in a single figure.
 
 The core API is also available from Python:
 
 ```python
 import pandas as pd
-from clrcycle import fit
+from clrcycle import fit, plot
 
 result = fit(pd.read_csv("matrix.csv", index_col=0))
 print(result.coordinates)
 print(result.feature_order)
+
+figure = plot(result)
+figure.savefig("clrcycle.png", dpi=220)
 ```
+
+Pass a short list of feature names with
+`plot(result, feature_labels=["feature_a", "feature_b"])` to label them on the
+circle. The plotting helper is deliberately minimal and dataset-independent.
+For metadata-aware and publication-style figures, see the analysis scripts in
+the [clrcycle paper repository](https://github.com/pachterlab/SEP_2026).
+
+The Colab-ready
+[`tutorial/circadian_liver.ipynb`](tutorial/circadian_liver.ipynb) notebook
+walks through the classic GSE54650 mouse liver example and saves its tables and
+figure under `tutorial/results/`.
 
 ## Hogenesch circadian example
 

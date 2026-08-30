@@ -19,6 +19,7 @@ jobs:
           --output-dir "$RUNNER_TEMP/clrcycle-output"
           --all-features
       - run: test -s "$RUNNER_TEMP/clrcycle-output/sample_coordinates.csv"
+      - run: test -s "$RUNNER_TEMP/clrcycle-output/projection.png"
       - run: bash scripts/download_circadian_data.sh
       - run: >-
           python scripts/run_all_tissues_clr_acs.py

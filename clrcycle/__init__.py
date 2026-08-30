@@ -1,10 +1,16 @@
 """clrcycle: circular projection for compositional data."""
 
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 import pandas as pd
+
+if TYPE_CHECKING:
+    from matplotlib.figure import Figure
+
+__all__ = ["ClrCycleResult", "circular_order", "clr_transform", "fit", "plot"]
 
 
 @dataclass
@@ -130,3 +136,74 @@ def fit(
         objective=objective,
         rho=float(objective / (eigenvalues[-1] + eigenvalues[-2])),
     )
+
+
+def plot(result: ClrCycleResult, *, feature_labels: Iterable[str] = ()) -> "Figure":
+    """Plot the sample projection and learned feature circle in one figure."""
+    import matplotlib.pyplot as plt
+
+    coordinates = result.coordinates
+    features = result.feature_order
+    labels = {str(label) for label in feature_labels}
+    cmap = "twilight_shifted"
+
+    figure, (sample_axis, feature_axis) = plt.subplots(
+        1, 2, figsize=(11, 5), constrained_layout=True
+    )
+    sample_axis.scatter(
+        coordinates["clrcycle_cosine"],
+        coordinates["clrcycle_sine"],
+        c=coordinates["clrcycle_angle"],
+        cmap=cmap,
+        vmin=0,
+        vmax=2.0 * np.pi,
+        s=46,
+        edgecolor="black",
+        linewidth=0.5,
+    )
+    sample_axis.axhline(0, color="0.85", linewidth=0.8, zorder=0)
+    sample_axis.axvline(0, color="0.85", linewidth=0.8, zorder=0)
+    sample_axis.set_aspect("equal", adjustable="datalim")
+    sample_axis.set_xlabel("clrcycle cosine coordinate")
+    sample_axis.set_ylabel("clrcycle sine coordinate")
+    sample_axis.set_title("Sample projection")
+
+    angles = features["clrcycle_angle"].to_numpy(float)
+    x = np.cos(angles)
+    y = np.sin(angles)
+    points = feature_axis.scatter(
+        x,
+        y,
+        c=angles,
+        cmap=cmap,
+        vmin=0,
+        vmax=2.0 * np.pi,
+        s=24,
+    )
+    feature_axis.add_patch(
+        plt.Circle((0, 0), 1.0, fill=False, color="0.75", linewidth=0.9)
+    )
+    for name, angle in zip(features["feature"].astype(str), angles):
+        if name in labels:
+            label_x, label_y = 1.1 * np.cos(angle), 1.1 * np.sin(angle)
+            feature_axis.text(
+                label_x,
+                label_y,
+                name,
+                fontsize=7,
+                ha="left" if label_x >= 0 else "right",
+                va="center",
+            )
+    feature_axis.set_aspect("equal")
+    feature_axis.set_xlim(-1.3, 1.3)
+    feature_axis.set_ylim(-1.3, 1.3)
+    feature_axis.set_xticks([])
+    feature_axis.set_yticks([])
+    for spine in feature_axis.spines.values():
+        spine.set_visible(False)
+    feature_axis.set_title("Learned feature circle")
+
+    colorbar = figure.colorbar(points, ax=[sample_axis, feature_axis], shrink=0.8)
+    colorbar.set_label("clrcycle angle")
+    colorbar.set_ticks([0, np.pi, 2.0 * np.pi], labels=["0", "π", "2π"])
+    return figure

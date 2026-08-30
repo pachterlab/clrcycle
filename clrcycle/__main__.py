@@ -9,7 +9,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from . import fit
+from . import fit, plot
 
 
 def main() -> None:
@@ -33,14 +33,7 @@ def main() -> None:
     result.coordinates.to_csv(args.output_dir / "sample_coordinates.csv", index=False)
     result.feature_order.to_csv(args.output_dir / "feature_order.csv", index=False)
 
-    figure, axis = plt.subplots(figsize=(6, 6), constrained_layout=True)
-    axis.scatter(result.coordinates["clrcycle_cosine"], result.coordinates["clrcycle_sine"], s=46, color="#377eb8")
-    axis.axhline(0, color="0.85", linewidth=0.8)
-    axis.axvline(0, color="0.85", linewidth=0.8)
-    axis.set_aspect("equal", adjustable="datalim")
-    axis.set_xlabel("clrcycle cosine coordinate")
-    axis.set_ylabel("clrcycle sine coordinate")
-    axis.set_title("clrcycle projection")
+    figure = plot(result)
     figure.savefig(args.output_dir / "projection.png", dpi=220)
     figure.savefig(args.output_dir / "projection.svg")
     plt.close(figure)
