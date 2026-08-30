@@ -57,39 +57,41 @@ figure.savefig("clrcycle.png", dpi=220)
 Pass a short list of feature names with
 `plot(result, feature_labels=["feature_a", "feature_b"])` to label them on the
 circle. The plotting helper is deliberately minimal and dataset-independent.
-For metadata-aware and publication-style figures, see the analysis scripts in
-the [clrcycle paper repository](https://github.com/pachterlab/SEP_2026).
+For metadata-aware and publication-style figures, use the returned tables as a
+starting point; examples are available in the
+[clrcycle paper repository](https://github.com/pachterlab/SEP_2026).
+
+## Tutorial
 
 The Colab-ready
-[`tutorial/circadian_liver.ipynb`](tutorial/circadian_liver.ipynb) notebook
-walks through the classic GSE54650 mouse liver example and saves its tables and
-figure under `tutorial/results/`.
+[`tutorial/circadian_liver.ipynb`](tutorial/circadian_liver.ipynb) notebook is
+the supported end-to-end example. It downloads the public GSE54650 mouse liver
+data, clearly separates data processing and feature selection from the two
+clrcycle commands, and explains how to interpret the resulting sample
+projection and learned gene circle.
 
-## Hogenesch circadian example
-
-The repository includes an example using the GSE54650 mouse tissue atlas from
-Hogenesch and colleagues. It creates the supervised reference and the label-free
-two-cycle-repeatability projection used in the accompanying study; the example
-is not required to run clrcycle on new data.
-
-```bash
-bash scripts/download_circadian_data.sh
-python scripts/run_all_tissues_clr_acs.py --analysis label-free
-```
-
-The label-free outputs are written to
-`results/all_tissues_unsupervised_repeat_periodic_96/`. Run the supervised
-example with `--analysis supervised`, or both with the default command.
+Open it directly in
+[Google Colab](https://colab.research.google.com/github/pachterlab/clrcycle/blob/main/tutorial/circadian_liver.ipynb)
+or run it from a local checkout. The notebook saves its tables and PNG/SVG
+figure under `tutorial/results/`. Downloaded data and generated results are not
+tracked by Git.
 
 ## Development
 
-The GitHub Action checks the generic command-line interface and the Hogenesch
-label-free example. Input data and generated outputs are excluded from version
-control so clones remain lightweight.
+Run the dataset-independent API, plotting, and command-line regression tests
+with:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The GitHub Action runs these tests on Python 3.10 through 3.13. Input data and
+generated outputs are excluded from version control so clones remain
+lightweight.
 
 ## Data attribution
 
-The optional Hogenesch example downloads GSE54650 from GEO. Please cite Zhang
-et al. (2014), *PNAS*, DOI:
+The tutorial downloads GSE54650 from GEO. Please cite Zhang et al. (2014),
+*PNAS*, DOI:
 [10.1073/pnas.1408886111](https://doi.org/10.1073/pnas.1408886111), when using
 those data.
