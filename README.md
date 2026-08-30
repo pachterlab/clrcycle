@@ -1,12 +1,7 @@
 # clrcycle
 
 `clrcycle` is a circular projection method for nonnegative, compositional data.
-It applies a centered log-ratio transform, learns a cyclic ordering of features,
-and projects samples onto the first circular Fourier mode. The result is an
-interpretable phase--amplitude view: sample angle describes position around the
-dominant cycle, sample radius measures the strength of the corresponding
-compositional contrast, and the learned feature circle orders features by their
-contribution to that cycle.
+It applies a centered log-ratio transformation, learns a cyclic feature ordering by maximizing variance captured by the first Fourier mode, and projects samples onto the corresponding cosine and sine coordinates. The resulting two-dimensional representation assigns each sample a phase and a radius measuring the magnitude of its projection onto the learned first-Fourier plane.
 
 ## Install
 
@@ -69,12 +64,6 @@ the supported end-to-end example. It downloads the public GSE54650 mouse liver
 data, clearly separates data processing and feature selection from the two
 clrcycle commands, and explains how to interpret the resulting sample
 projection and learned gene circle.
-
-Open it directly in
-[Google Colab](https://colab.research.google.com/github/pachterlab/clrcycle/blob/main/tutorial/circadian_liver.ipynb)
-or run it from a local checkout. The notebook saves its tables and PNG/SVG
-figure under `tutorial/results/`. Downloaded data and generated results are not
-tracked by Git.
 
 ## Development
 
