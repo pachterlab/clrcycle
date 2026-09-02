@@ -32,6 +32,7 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     result.coordinates.to_csv(args.output_dir / "sample_coordinates.csv", index=False)
     result.feature_order.to_csv(args.output_dir / "feature_order.csv", index=False)
+    result.feature_weights.to_csv(args.output_dir / "feature_weights.csv", index=False)
 
     figure = plot(result)
     figure.savefig(args.output_dir / "projection.png", dpi=220)

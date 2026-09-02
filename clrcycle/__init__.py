@@ -1,7 +1,7 @@
 """clrcycle: circular projection for compositional data."""
 
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Optional
 
 import numpy as np
@@ -15,12 +15,13 @@ __all__ = ["ClrCycleResult", "circular_order", "clr_transform", "fit", "plot"]
 
 @dataclass
 class ClrCycleResult:
-    """Result of a clrcycle fit."""
+    """Result including per-sample feature contributions to the radial projection."""
 
     coordinates: pd.DataFrame
     feature_order: pd.DataFrame
     objective: float
     rho: float
+    feature_weights: pd.DataFrame = field(default_factory=pd.DataFrame)
 
 
 def clr_transform(values: np.ndarray) -> np.ndarray:
@@ -130,11 +131,34 @@ def fit(
             "log_variance": log_variance.loc[selected.columns.to_numpy()[order]].to_numpy(),
         }
     )
+    sample_angles = coordinates["clrcycle_angle"].to_numpy()
+    radii = coordinates["clrcycle_radius"].to_numpy()
+    ordered_centered = centered[:, order]
+    weights = ordered_centered * (
+        np.cos(sample_angles[:, None]) * cosine + np.sin(sample_angles[:, None]) * sine
+    )
+    feature_weights = pd.DataFrame(
+        {
+            "sample": np.repeat(coordinates["sample"].to_numpy(), d),
+            "feature": np.tile(feature_order["feature"].to_numpy(), len(coordinates)),
+            "clrcycle_position": np.tile(
+                feature_order["clrcycle_position"].to_numpy(), len(coordinates)
+            ),
+            "feature_angle": np.tile(feature_order["clrcycle_angle"].to_numpy(), len(coordinates)),
+            "sample_angle": np.repeat(sample_angles, d),
+            "clrcycle_radius": np.repeat(radii, d),
+            "centered_clr": ordered_centered.ravel(),
+            "feature_weight": weights.ravel(),
+        }
+    )
+    if not np.allclose(weights.sum(axis=1), radii, rtol=1e-12, atol=1e-12):
+        raise RuntimeError("feature weights do not reconstruct clrcycle_radius.")
     return ClrCycleResult(
         coordinates=coordinates,
         feature_order=feature_order,
         objective=objective,
         rho=float(objective / (eigenvalues[-1] + eigenvalues[-2])),
+        feature_weights=feature_weights,
     )
 
 
